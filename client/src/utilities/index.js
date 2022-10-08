@@ -25,6 +25,7 @@ export const getUserDataFromToken = () => {
       imageUrl: tokenData?.picture,
       email: tokenData?.email,
       id: tokenData?.id ?? tokenData?.sub,
+      exp: tokenData?.exp,
     };
   }
   return null;
