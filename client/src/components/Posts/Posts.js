@@ -7,11 +7,13 @@ import useStyles from './styles';
 
 const Posts = ({ setCurrentId }) => {
   const classes = useStyles();
-  const posts = useSelector((state) => state.posts);
+  const { isLoading, posts } = useSelector((state) => state.postsData);
   
   return (
-    !posts?.length
-      ? <CircularProgress />
+    isLoading
+      ? (<Grid container justifyContent='center'>
+        <CircularProgress />
+      </Grid>)
       : (<Grid container className={classes.container} alignItems='stretch' spacing={3}>
         {posts.map((post) => (
           <Grid key={post._id} item xs={12} sm={6}>
