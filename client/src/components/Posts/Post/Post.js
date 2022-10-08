@@ -26,10 +26,12 @@ const Post = ({ post, setCurrentId }) => {
         );
     }
     return <><ThumbUpAltOutlined fontSize="small" />&nbsp;Like</>;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [post.likes, user?.id]);
 
   const isPostedByLoggedInUser = useMemo(() => {
     return (user?.id === post.creatorId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [post.creatorId, user?.id]);
   
   return (
