@@ -1,8 +1,9 @@
 import * as api from '../api';
-import { CREATE, DELETE, FETCH_ALL, UPDATE } from '../constants/actionTypes';
+import { CREATE, DELETE, FETCH_ALL, LOADING_POSTS, UPDATE } from '../constants/actionTypes';
 
 export const getPosts = () => async (dispatch) => {
   try {
+    dispatch({ type: LOADING_POSTS });
     const { data } = await api.fetchPosts();
     dispatch({ type: FETCH_ALL, payload: data });
   } catch (error) {
@@ -12,6 +13,7 @@ export const getPosts = () => async (dispatch) => {
 
 export const createPost = (newPost) => async (dispatch) => {
   try {
+    dispatch({ type: LOADING_POSTS });
     const { data } = await api.createPost(newPost);
     dispatch({ type: CREATE, payload: data });
   } catch (error) {
@@ -21,6 +23,7 @@ export const createPost = (newPost) => async (dispatch) => {
 
 export const updatePost = (id, post) => async (dispatch) => {
   try {
+    dispatch({ type: LOADING_POSTS });
     const { data } = await api.updatePost(id, post);
     dispatch({ type: UPDATE, payload: data });
   } catch (error) {
@@ -30,6 +33,7 @@ export const updatePost = (id, post) => async (dispatch) => {
 
 export const deletePost = (id) => async (dispatch) => {
   try {
+    dispatch({ type: LOADING_POSTS });
     await api.deletePost(id);
     dispatch({ type: DELETE, payload: id });
   } catch (error) {
