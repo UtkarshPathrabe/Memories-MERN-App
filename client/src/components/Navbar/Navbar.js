@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { AppBar, Avatar, Button, Toolbar, Typography } from '@material-ui/core';
 import { Link, useHistory, useLocation } from 'react-router-dom';
-import jwt_decode from 'jwt-decode';
 import { useDispatch } from 'react-redux';
 import { googleLogout } from '@react-oauth/google';
 
 import memoriesLogo from '../../images/memoriesLogo.png';
 import useStyles from './styles';
 import { LOGOUT } from '../../constants/actionTypes';
+import { getUserDataFromToken } from '../../utilities';
 
 const Navbar = () => {
   const classes = useStyles();
@@ -17,21 +17,7 @@ const Navbar = () => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const jwtToken = localStorage.getItem('profile');
-    if (jwtToken) {
-      const tokenData = jwt_decode(jwtToken);
-      setUser({
-        googleId: tokenData.sub,
-        name: tokenData.name,
-        imageUrl: tokenData.picture,
-        givenName: tokenData.given_name,
-        familyName: tokenData.family_name,
-        email: tokenData.email,
-      });
-    }
-    else {
-      setUser(null);
-    }
+    setUser(getUserDataFromToken());
   }, [location]);
 
   const logout = () => {
