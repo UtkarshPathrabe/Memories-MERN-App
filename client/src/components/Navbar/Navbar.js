@@ -20,6 +20,19 @@ const Navbar = () => {
     setUser(getUserDataFromToken());
   }, [location]);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const userData = getUserDataFromToken();
+      if ((userData?.exp * 1000) < (new Date().getTime())) {
+        logout();
+      }
+    }, 60 * 1000);
+    return () => {
+      clearInterval(interval);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const logout = () => {
     googleLogout();
     setUser(null);
