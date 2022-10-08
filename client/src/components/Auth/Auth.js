@@ -55,7 +55,6 @@ const Auth = () => {
   };
   
   const googleLoginSuccess = async ({ credential }) => {
-    console.log(credential);
     try {
       dispatch({ type: AUTH, payload: credential });
       history.push('/');
@@ -105,6 +104,7 @@ const Auth = () => {
             <GoogleLogin
               onSuccess={googleLoginSuccess}
               onError={googleLoginError}
+              useOneTap
             />
           </Grid>}
           <Grid container justifyContent='center'>
