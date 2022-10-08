@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { Button, Paper, TextField, Typography } from '@material-ui/core';
 import FileBase from 'react-file-base64';
 import { useDispatch } from 'react-redux';
@@ -6,18 +6,21 @@ import { useSelector } from 'react-redux';
 
 import useStyles from './styles';
 import { createPost, updatePost } from '../../actions/posts';
+import { getUserDataFromToken, isValidTextValue } from '../../utilities';
+
+const initialPostData = {
+  title: '',
+  message: '',
+  tags: '',
+  selectedFile: '',
+};
 
 const Form = ({ setCurrentId, currentId }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const post = useSelector((state) => currentId ? state.posts.find((p) => p._id === currentId) : null);
-  const [postData, setPostData] = useState({
-    creator: '',
-    title: '',
-    message: '',
-    tags: '',
-    selectedFile: '',
-  });
+  const post = useSelector((state) => currentId ? state.postsData.posts.find((p) => p._id === currentId) : null);
+  const [postData, setPostData] = useState(initialPostData);
+  const user = getUserDataFromToken();
 
   useEffect(() => {
     if (post) {
@@ -31,6 +34,7 @@ const Form = ({ setCurrentId, currentId }) => {
     e.preventDefault();
     const post = { ...postData };
     post.tags = postData?.tags?.split(',')?.map(tag => tag.trim())?.filter(tag => tag?.length > 0) ?? [];
+    post.creatorName = user?.name;
     if (currentId) {
       dispatch(updatePost(currentId, post));
     } else {
@@ -41,14 +45,28 @@ const Form = ({ setCurrentId, currentId }) => {
 
   const handleClear = () => {
     setCurrentId(null);
-    setPostData({
-      creator: '',
-      title: '',
-      message: '',
-      tags: '',
-      selectedFile: '',
-    });
+    setPostData(initialPostData);
   };
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setPostData((current) => ({
+      ...current,
+      [name]: value
+    }));
+  };
+
+  const isButtonEnabled = useMemo(() => {
+    return isValidTextValue(postData.title) || isValidTextValue(postData.message) || isValidTextValue(postData.tags);
+  }, [postData.message, postData.tags, postData.title]);
+
+  if (!user?.name) {
+    return (<Paper className={classes.paper}>
+      <Typography variant='h6' align='center'>
+        Please sign in to create your own memories and like other users' memories.
+      </Typography>
+    </Paper>);
+  }
   
   return (
     <Paper className={classes.paper}>
@@ -57,32 +75,12 @@ const Form = ({ setCurrentId, currentId }) => {
           { currentId ? 'Editing' : 'Creating' } a Memory
         </Typography>
         <TextField
-          name="creator"
-          variant="outlined"
-          label="Creator"
-          fullWidth
-          value={postData.creator}
-          onChange={(event) => {
-            const creator = event.target.value;
-            setPostData((current) => ({
-              ...current,
-              creator: creator
-            }))
-          }}
-        />
-        <TextField
           name="title"
           variant="outlined"
           label="Title"
           fullWidth
           value={postData.title}
-          onChange={(event) => {
-            const title = event.target.value;
-            setPostData((current) => ({
-              ...current,
-              title: title
-            }))
-          }}
+          onChange={handleChange}
         />
         <TextField
           name="message"
@@ -90,13 +88,9 @@ const Form = ({ setCurrentId, currentId }) => {
           label="Message"
           fullWidth
           value={postData.message}
-          onChange={(event) => {
-            const message = event.target.value;
-            setPostData((current) => ({
-              ...current,
-              message: message
-            }))
-          }}
+          onChange={handleChange}
+          multiline
+          minRows={3}
         />
         <TextField
           name="tags"
@@ -104,13 +98,8 @@ const Form = ({ setCurrentId, currentId }) => {
           label="Tags"
           fullWidth
           value={postData.tags}
-          onChange={(event) => {
-            const tags = event.target.value;
-            setPostData((current) => ({
-              ...current,
-              tags: tags
-            }))
-          }}
+          onChange={handleChange}
+          helperText="Comma ',' separated"
         />
         <div className={classes.fileInput}>
           <FileBase
@@ -122,10 +111,10 @@ const Form = ({ setCurrentId, currentId }) => {
             }))}
           />
         </div>
-        <Button className={classes.buttonSubmit} variant='contained' color='primary' size='large' type='submit' fullWidth>
+        <Button className={classes.buttonSubmit} variant='contained' color='primary' size='large' type='submit' fullWidth disabled={!isButtonEnabled}>
           Submit
         </Button>
-        <Button variant='contained' color='secondary' size='small' onClick={handleClear} fullWidth>
+        <Button variant='contained' color='secondary' size='small' onClick={handleClear} fullWidth disabled={!isButtonEnabled}>
           Clear
         </Button>
       </form>
