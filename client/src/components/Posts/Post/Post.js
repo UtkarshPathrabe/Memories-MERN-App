@@ -35,7 +35,7 @@ const Post = ({ post, setCurrentId }) => {
   }, [post.creatorId, user?.id]);
   
   return (
-    <Card className={classes.card}>
+    <Card className={classes.card} raised elevation={6}>
       <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}>
         <CardMedia className={classes.media} image={post.selectedFile} title={post.title} />
         <div className={classes.overlay}>
