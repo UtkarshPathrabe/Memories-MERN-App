@@ -39,8 +39,7 @@ const Form = ({ setCurrentId, currentId }) => {
     if (currentId) {
       dispatch(updatePost(currentId, post));
     } else {
-      dispatch(createPost(post));
-      history.push('/');
+      dispatch(createPost(post, history));
     }
     handleClear();
   };
