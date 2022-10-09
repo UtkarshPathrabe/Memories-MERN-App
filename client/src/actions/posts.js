@@ -1,5 +1,17 @@
 import * as api from '../api';
-import { CREATE, DELETE, END_LOADING, FETCH_ALL, FETCH_BY_SEARCH, START_LOADING, UPDATE } from '../constants/actionTypes';
+import { CREATE, DELETE, END_LOADING, FETCH_ALL, FETCH_BY_SEARCH, FETCH_POST, START_LOADING, UPDATE } from '../constants/actionTypes';
+
+export const getPost = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: START_LOADING });
+    const { data } = await api.fetchPost(id);
+    dispatch({ type: FETCH_POST, payload: data });
+  } catch (error) {
+    console.error(error);
+  } finally {
+    dispatch({ type: END_LOADING });
+  }
+};
 
 export const getPosts = (page) => async (dispatch) => {
   try {
