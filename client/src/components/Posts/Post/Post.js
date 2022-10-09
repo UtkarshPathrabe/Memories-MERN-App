@@ -1,11 +1,12 @@
 import React, { useMemo } from 'react';
-import { Button, Card, CardActions, CardContent, CardMedia, Typography } from '@material-ui/core';
+import { Button, ButtonBase, Card, CardActions, CardContent, CardMedia, Typography } from '@material-ui/core';
 import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import ThumbUpAltOutlined from '@material-ui/icons/ThumbUpAltOutlined';
 import DeleteIcon from '@material-ui/icons/Delete';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import moment from 'moment';
 import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom'
 
 import useStyles from './styles';
 import { deletePost, likePost } from '../../../actions/posts';
@@ -14,6 +15,7 @@ import { getUserDataFromToken } from '../../../utilities';
 const Post = ({ post, setCurrentId }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const history = useHistory();
   const user = getUserDataFromToken();
 
   const Likes = useMemo(() => {
@@ -33,10 +35,15 @@ const Post = ({ post, setCurrentId }) => {
     return (user?.id === post.creatorId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [post.creatorId, user?.id]);
+
+  const openPost = () => history.push(`/posts/${post._id}`);
   
   return (
     <Card className={classes.card} raised elevation={6}>
-      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}>
+      <ButtonBase
+        className={classes.cardAction}
+        onClick={openPost}
+      >
         <CardMedia className={classes.media} image={post.selectedFile} title={post.title} />
         <div className={classes.overlay}>
           <Typography variant='h6'>{post.creatorName}</Typography>
@@ -54,17 +61,15 @@ const Post = ({ post, setCurrentId }) => {
         <CardContent>
           <Typography variant='body2' color='textSecondary' component='p'>{post.message}</Typography>
         </CardContent>
-      </div>
-      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-        <CardActions className={classes.cardActions}>
-          <Button size="small" color='primary' onClick={() => dispatch(likePost(post._id))} disabled={!user?.id}>
-            { Likes }
-          </Button>
-          {(isPostedByLoggedInUser) && <Button size="small" color='secondary' onClick={() => dispatch(deletePost(post._id))}>
-            <DeleteIcon fontSize='small' /> Delete
-          </Button>}
-        </CardActions>
-      </div>
+      </ButtonBase>
+      <CardActions className={classes.cardActions}>
+        <Button size="small" color='primary' onClick={() => dispatch(likePost(post._id))} disabled={!user?.id}>
+          { Likes }
+        </Button>
+        {(isPostedByLoggedInUser) && <Button size="small" color='secondary' onClick={() => dispatch(deletePost(post._id))}>
+          <DeleteIcon fontSize='small' /> Delete
+        </Button>}
+      </CardActions>
     </Card>
   );
 };
