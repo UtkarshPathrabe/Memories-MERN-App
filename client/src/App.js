@@ -9,8 +9,6 @@ import PostDetails from './components/PostDetails/PostDetails';
 import { getUserDataFromToken } from './utilities';
 
 const App = () => {
-  const user = getUserDataFromToken();
-  console.log(user);
 
   return (
     <BrowserRouter>
@@ -21,7 +19,7 @@ const App = () => {
           <Route path='/posts' exact component={Home} />
           <Route path='/posts/search' exact component={Home} />
           <Route path='/posts/:id' component={PostDetails} />
-          <Route path='/auth' exact component={() => ((user) ? <Redirect to='/posts?page=1' /> : <Auth /> )} />
+          <Route path='/auth' exact component={() => ((getUserDataFromToken()) ? <Redirect to='/posts?page=1' /> : <Auth /> )} />
         </Switch>
       </Container>
     </BrowserRouter>
