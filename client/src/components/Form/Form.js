@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux';
 import useStyles from './styles';
 import { createPost, updatePost } from '../../actions/posts';
 import { getUserDataFromToken, isValidTextValue } from '../../utilities';
+import { useHistory } from 'react-router-dom';
 
 const initialPostData = {
   title: '',
@@ -18,9 +19,9 @@ const initialPostData = {
 const Form = ({ setCurrentId, currentId }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const history = useHistory();
   const post = useSelector((state) => currentId ? state.postsData.posts.find((p) => p._id === currentId) : null);
   const [postData, setPostData] = useState(initialPostData);
-  const user = getUserDataFromToken();
 
   useEffect(() => {
     if (post) {
@@ -34,11 +35,12 @@ const Form = ({ setCurrentId, currentId }) => {
     e.preventDefault();
     const post = { ...postData };
     post.tags = postData?.tags?.split(',')?.map(tag => tag.trim())?.filter(tag => tag?.length > 0) ?? [];
-    post.creatorName = user?.name;
+    post.creatorName = getUserDataFromToken()?.name;
     if (currentId) {
       dispatch(updatePost(currentId, post));
     } else {
       dispatch(createPost(post));
+      history.push('/');
     }
     handleClear();
   };
@@ -60,7 +62,7 @@ const Form = ({ setCurrentId, currentId }) => {
     return isValidTextValue(postData.title) || isValidTextValue(postData.message) || isValidTextValue(postData.tags);
   }, [postData.message, postData.tags, postData.title]);
 
-  if (!user?.name) {
+  if (!getUserDataFromToken()?.name) {
     return (<Paper className={classes.paper}>
       <Typography variant='h6' align='center'>
         Please sign in to create your own memories and like other users' memories.
