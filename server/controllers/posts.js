@@ -3,6 +3,16 @@ import PostMessage from "../models/postMessage.js";
 
 const LIMIT = 6;
 
+export const getPost = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const post = await PostMessage.findById(id);
+    res.status(200).json(post);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
+
 export const getPosts = async (req, res) => {
   const { page } = req.query;
   try {
@@ -16,7 +26,7 @@ export const getPosts = async (req, res) => {
 };
 
 export const getPostsBySearch = async (req, res) => {
-  const { searchQuery, tags, page } = req.query;
+  const { searchQuery, tags } = req.query;
   try {
     const title = new RegExp(searchQuery, "i");
     const posts = await PostMessage.find({ $or: [{ title: title }, { tags: { $in: tags.split(',') } }]});
