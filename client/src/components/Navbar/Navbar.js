@@ -60,11 +60,9 @@ const Navbar = () => {
               Logout
             </Button>
           </div>
-        ) : (
-          <Button component={Link} to="auth" variant="contained" color="primary">
+        ) : ((location.pathname === '/auth') ? null : (<Button component={Link} to="auth" variant="contained" color="primary">
             Sign In
-          </Button>
-        ) }
+          </Button>)) }
       </Toolbar>
     </AppBar>
   );
