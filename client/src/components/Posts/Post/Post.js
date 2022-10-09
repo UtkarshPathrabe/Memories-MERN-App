@@ -36,31 +36,35 @@ const Post = ({ post, setCurrentId }) => {
   
   return (
     <Card className={classes.card}>
-      <CardMedia className={classes.media} image={post.selectedFile} title={post.title} />
-      <div className={classes.overlay}>
-        <Typography variant='h6'>{post.creatorName}</Typography>
-        <Typography variant='body2'>{moment(post.createdAt).fromNow()}</Typography>
+      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}>
+        <CardMedia className={classes.media} image={post.selectedFile} title={post.title} />
+        <div className={classes.overlay}>
+          <Typography variant='h6'>{post.creatorName}</Typography>
+          <Typography variant='body2'>{moment(post.createdAt).fromNow()}</Typography>
+        </div>
+        {(isPostedByLoggedInUser) && <div className={classes.overlay2}>
+          <Button style={{ color: 'white' }} size="small" onClick={() => setCurrentId(post._id)}>
+            <MoreHorizIcon fontSize='medium' />
+          </Button>
+        </div>}
+        <div className={classes.details}>
+          <Typography variant='body2' color='textSecondary'>{post.tags.map((tag) => `#${tag} `)}</Typography>
+        </div>
+        <Typography className={classes.title} variant='h5' gutterBottom>{post.title}</Typography>
+        <CardContent>
+          <Typography variant='body2' color='textSecondary' component='p'>{post.message}</Typography>
+        </CardContent>
       </div>
-      {(isPostedByLoggedInUser) && <div className={classes.overlay2}>
-        <Button style={{ color: 'white' }} size="small" onClick={() => setCurrentId(post._id)}>
-          <MoreHorizIcon fontSize='medium' />
-        </Button>
-      </div>}
-      <div className={classes.details}>
-        <Typography variant='body2' color='textSecondary'>{post.tags.map((tag) => `#${tag} `)}</Typography>
+      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+        <CardActions className={classes.cardActions}>
+          <Button size="small" color='primary' onClick={() => dispatch(likePost(post._id))} disabled={!user?.id}>
+            { Likes }
+          </Button>
+          {(isPostedByLoggedInUser) && <Button size="small" color='secondary' onClick={() => dispatch(deletePost(post._id))}>
+            <DeleteIcon fontSize='small' /> Delete
+          </Button>}
+        </CardActions>
       </div>
-      <Typography className={classes.title} variant='h5' gutterBottom>{post.title}</Typography>
-      <CardContent>
-        <Typography variant='body2' color='textSecondary' component='p'>{post.message}</Typography>
-      </CardContent>
-      <CardActions className={classes.cardActions}>
-        <Button size="small" color='primary' onClick={() => dispatch(likePost(post._id))} disabled={!user?.id}>
-          { Likes }
-        </Button>
-        {(isPostedByLoggedInUser) && <Button size="small" color='secondary' onClick={() => dispatch(deletePost(post._id))}>
-          <DeleteIcon fontSize='small' /> Delete
-        </Button>}
-      </CardActions>
     </Card>
   );
 };
