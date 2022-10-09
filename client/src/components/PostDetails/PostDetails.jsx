@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { CircularProgress, Divider, Paper, Typography } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
@@ -24,6 +24,12 @@ const PostDetails = () => {
     }
   }, [dispatch, post]);
 
+  const recommendedPosts = useMemo(() => {
+    if (post && posts.length) {
+      return posts.filter(({ _id }) => _id !== post._id);
+    }
+  }, [post, posts]);
+
   const openPost = (postId) => history.push(`/posts/${postId}`);
 
   if (isLoading) {
@@ -35,8 +41,6 @@ const PostDetails = () => {
   if (!post) {
     return null;
   }
-
-  const recommendedPosts = posts.filter(({ _id }) => _id !== post._id);
 
   return (
     <Paper style={{ padding: '20px', borderRadius: '15px' }} elevation={6}>
