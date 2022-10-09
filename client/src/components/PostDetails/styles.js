@@ -29,7 +29,7 @@ export default makeStyles((theme) => ({
   recommendedPosts: {
     display: 'flex',
     flexWrap: 'wrap',
-    gap: '1rem',
+    gap: '1.25rem',
     [theme.breakpoints.down('sm')]: {
       flexDirection: 'column',
     },
