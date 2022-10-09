@@ -62,11 +62,11 @@ const PostDetails = () => {
           <Typography gutterBottom variant='h5'>You might also like:</Typography>
           <Divider style={{ marginBottom: '1rem' }} />
           <div className={classes.recommendedPosts}>
-            { recommendedPosts.map(({ title, message, name, likes, selectedFile, _id }) => (
+            { recommendedPosts.map(({ title, name, likes, selectedFile, _id }) => (
               <div style={{ cursor: 'pointer' }} onClick={() => openPost(_id)} key={_id}>
                 <Typography gutterBottom variant='h6'>{title}</Typography>
                 <Typography gutterBottom variant='subtitle2'>{name}</Typography>
-                <img src={selectedFile} width='200px' alt={title} />
+                <img src={selectedFile} height='150px' alt={title} style={{ borderRadius: '1rem' }} />
                 <Typography gutterBottom variant='subtitle1'>Likes: {likes.length}</Typography>
               </div>
             )) }
