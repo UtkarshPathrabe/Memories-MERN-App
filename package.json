@@ -4,6 +4,10 @@
   "description": "",
   "main": "index.js",
   "type": "module",
+  "engines": {
+    "node": "16.13.1",
+    "npm": "8.12.1"
+  },
   "scripts": {
     "start": "node index.js"
   },
