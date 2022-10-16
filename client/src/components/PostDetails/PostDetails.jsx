@@ -21,6 +21,14 @@ const PostDetails = () => {
 
   useEffect(() => {
     if (post) {
+      document.title = 'Memories - ' + post.title;
+    } else {
+      document.title = 'Memories';
+    }
+  }, [post]);
+
+  useEffect(() => {
+    if (post) {
       dispatch(getPostsBySearch({ search: 'none', tags: post?.tags.join(',') }));
     }
   }, [dispatch, post]);
