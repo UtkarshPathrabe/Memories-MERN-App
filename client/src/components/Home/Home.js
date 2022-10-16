@@ -36,6 +36,10 @@ const Home = () => {
   const [tags, setTags] = useState(initialTagsValue(tagsSearchParams));
 
   useEffect(() => {
+    document.title = 'Memories';
+  }, []);
+
+  useEffect(() => {
     const searchValue = initialSearchValue(searchQueryParams);
     const tagsValue = initialTagsValue(tagsSearchParams);
     if (searchValue.trim() || tagsValue.length > 0) {
